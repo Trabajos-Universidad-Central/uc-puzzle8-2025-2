@@ -17,10 +17,9 @@ from searches.genetic import genetic_simple
 
 
 class Puzzle8GUI:
-    """MERO SCRIPT ESTO HACE LA FUNCION MELOSO"""
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
-        root.title("Puzzle-8 | Búsqueda (DFS/BPP/Ascenso de Colina)")
+        root.title("Puzzle-8 | Métodos de Búsqueda")
 
         self.start_state: Optional[State] = None
         self.goal_state: Optional[State] = None
@@ -28,7 +27,6 @@ class Puzzle8GUI:
         self._build_ui()
 
     def _build_ui(self) -> None:
-        """ESTO HACE EL MOTODO VUILD"""
         frm = ttk.Frame(self.root, padding=10)
         frm.grid(row=0, column=0, sticky='nsew')
         self.root.rowconfigure(0, weight=1)
