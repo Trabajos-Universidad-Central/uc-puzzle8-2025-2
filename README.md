@@ -19,7 +19,7 @@ Este proyecto implementa el juego Puzzle 8, donde el objetivo es ordenar una cua
     ```bash
     git clone https://github.com/Trabajos-Universidad-Central/uc-puzzle8-2025-2.git
     ```
-2. Instala las dependencias:
+2. Instala las dependencias si es necesario:
     ```bash
     pip install -r requirements.txt
     ```
@@ -30,13 +30,34 @@ Este proyecto implementa el juego Puzzle 8, donde el objetivo es ordenar una cua
     ```bash
     python main.py
     ```
-2. Ingresa el estado inicial del puzzle cuando se solicite.
+2. Ingresa el estado inicial y final del puzzle cuando se solicite.
 3. Selecciona el algoritmo y la heurística deseada.
 
 ## Estructura del Proyecto
 
-- `main.py`: Archivo principal de ejecución.
+- `main.py`: Archivo principal de ejecución - versión de Python utilizada: 3.12.4
 - `puzzle.py`: Lógica del juego y movimientos.
-- `algorithms/`: Implementaciones de los algoritmos de búsqueda.
-- `heuristics/`: Funciones de heurísticas.
+- `searches/`: Implementaciones de los algoritmos de búsqueda.
+- `estados_de_prueba/`: Carpeta con ejemplos de estados inicial y final del puzzle en formato `.txt`.
 - `README.md`: Documentación del proyecto.
+
+## Ejemplo de archivos de estado
+
+En la carpeta `estados_de_prueba` se incluyen dos archivos de ejemplo:
+
+- `inicial.txt`:
+    ```
+    1 2 3
+    0 5 6
+    4 7 8
+    ```
+- `final.txt`:
+    ```
+    1 2 3
+    4 5 6
+    7 8 0
+    ```
+
+Cada archivo representa el estado del puzzle como una matriz de 3x3, donde los números están separados por espacios y cada fila en una línea distinta. El número `0` representa el espacio vacío.
+
+Puedes utilizar estos archivos para cargar estados de prueba en el programa principal.
