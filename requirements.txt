@@ -1,3 +1,4 @@
 # Dependencias del proyecto Puzzle-8
 # La aplicación usa tkinter que viene incluido con Python
 # No se requieren dependencias externas adicionales
+ 
