@@ -1,9 +1,10 @@
 from typing import List, Tuple, Optional, Dict
 
-State = Tuple[int, ...]  # 9-length flat tuple representing the board, 0 is blank
+State = Tuple[int, ...]  # Tupla de longitud 9 que representa el tablero, 0 indica el espacio vacío
 
 
 def read_puzzle_file(path: str) -> State:
+    # Lee un archivo de texto y retorna el estado del puzzle como una tupla de 9 enteros
     numbers: List[int] = []
     with open(path, 'r', encoding='utf-8') as f:
         for line in f:
@@ -24,6 +25,7 @@ def read_puzzle_file(path: str) -> State:
 
 
 def manhattan_distance(state: State, goal: State) -> int:
+    # Calcula la distancia Manhattan entre dos estados del puzzle
     pos_goal: Dict[int, Tuple[int, int]] = {v: (i // 3, i % 3) for i, v in enumerate(goal)}
     dist = 0
     for i, v in enumerate(state):
@@ -36,6 +38,7 @@ def manhattan_distance(state: State, goal: State) -> int:
 
 
 def is_solvable(start: State, goal: State) -> bool:
+    # Determina si el estado inicial puede llegar al estado meta (paridad de inversiones)
     def inversions(arr: List[int]) -> int:
         a = [x for x in arr if x != 0]
         inv = 0
@@ -49,6 +52,7 @@ def is_solvable(start: State, goal: State) -> bool:
 
 
 def neighbors(state: State) -> List[Tuple[str, State]]:
+    # Retorna los estados vecinos posibles a partir de un estado dado
     idx = state.index(0)
     r, c = divmod(idx, 3)
     nbrs: List[Tuple[str, State]] = []
@@ -59,7 +63,7 @@ def neighbors(state: State) -> List[Tuple[str, State]]:
         lst[idx], lst[j] = lst[j], lst[idx]
         nbrs.append((move, tuple(lst)))
 
-    # Order: Arriba, Abajo, Derecha, Izquierda
+    # Orden: Arriba, Abajo, Derecha, Izquierda
     if r > 0:
         swap(r - 1, c, 'Arriba')
     if r < 2:
@@ -73,6 +77,7 @@ def neighbors(state: State) -> List[Tuple[str, State]]:
 
 
 def state_to_str(state: State) -> str:
+    # Convierte un estado del puzzle a una cadena de texto legible
     rows = []
     for r in range(3):
         row = state[r*3:(r+1)*3]
@@ -82,6 +87,7 @@ def state_to_str(state: State) -> str:
 
 class Solution:
     def __init__(self, path: List[State], moves: List[str], nodes_generated: int, nodes_expanded: int):
+        # Representa una solución encontrada por los algoritmos de búsqueda
         self.path = path
         self.moves = moves
         self.nodes_generated = nodes_generated
@@ -89,7 +95,9 @@ class Solution:
 
 
 def apply_move(state: State, move: str) -> State:
-    """Apply a move label to a state if valid; otherwise return the same state."""
+    """
+    Aplica un movimiento a un estado si es válido; si no, retorna el mismo estado.
+    """
     for mv, st in neighbors(state):
         if mv == move:
             return st
@@ -97,7 +105,9 @@ def apply_move(state: State, move: str) -> State:
 
 
 def apply_moves(state: State, moves: List[str]) -> Tuple[State, List[State]]:
-    """Apply a sequence of moves, returning final state and the path of states including the start."""
+    """
+    Aplica una secuencia de movimientos, retornando el estado final y la trayectoria de estados (incluyendo el inicial).
+    """
     path = [state]
     cur = state
     for mv in moves:

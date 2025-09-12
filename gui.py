@@ -32,13 +32,13 @@ class Puzzle8GUI:
         self.root.rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
 
-        # File loaders
+    # Cargadores de archivos
         file_bar = ttk.Frame(frm)
         file_bar.grid(row=0, column=0, columnspan=2, sticky='w', pady=(0, 8))
         ttk.Button(file_bar, text="Cargar Inicial", command=self.load_start).grid(row=0, column=0, padx=(0, 6))
         ttk.Button(file_bar, text="Cargar Meta", command=self.load_goal).grid(row=0, column=1, padx=(0, 6))
 
-        # Method and params
+    # Selección de método y parámetros
         opt_bar = ttk.Frame(frm)
         opt_bar.grid(row=1, column=0, columnspan=2, sticky='w', pady=(0, 8))
         ttk.Label(opt_bar, text="Método:").grid(row=0, column=0, padx=(0, 6))
@@ -47,7 +47,7 @@ class Puzzle8GUI:
             opt_bar,
             textvariable=self.method_var,
             state='readonly',
-            values=['DFS (Profundidad)', 'BPP (Profundidad Prefijada)', 'Ascenso de Colina', 'A*', 'Genético (Simple)'],
+            values=['DFS (Profundidad)', 'BPP (Profundidad)', 'Ascenso de Colina', 'A*', 'Genético (Simple)'],
         )
         self.method_combo.grid(row=0, column=1, padx=(0, 12))
         self.method_combo.bind('<<ComboboxSelected>>', self._on_method_change)
@@ -57,7 +57,7 @@ class Puzzle8GUI:
         self.depth_entry = ttk.Entry(opt_bar, textvariable=self.depth_var, width=8)
         self.depth_entry.grid(row=0, column=3, padx=(0, 12))
 
-        # Parámetros GA (widgets creados pero ocultos por defecto)
+    # Parámetros del Algoritmo Genético (widgets creados pero ocultos por defecto)
         self.ga_pop_lbl = ttk.Label(opt_bar, text="Población (GA):")
         self.ga_pop_var = tk.StringVar(value='80')
         self.ga_pop_entry = ttk.Entry(opt_bar, textvariable=self.ga_pop_var, width=6)
@@ -80,10 +80,10 @@ class Puzzle8GUI:
 
         ttk.Button(opt_bar, text="Resolver", command=self.solve).grid(row=0, column=12)
 
-        # Configurar visibilidad inicial de GA
+    # Configurar la visibilidad inicial de los parámetros GA
         self._update_ga_params_visibility()
 
-        # Displays
+    # Visualización de los tableros
         boards = ttk.Frame(frm)
         boards.grid(row=2, column=0, sticky='nw')
         self.start_lbl = ttk.Label(boards, text="Inicial:\n-", justify='left')
@@ -91,13 +91,13 @@ class Puzzle8GUI:
         self.goal_lbl = ttk.Label(boards, text="Meta:\n-", justify='left')
         self.goal_lbl.grid(row=0, column=1, sticky='w')
 
-        # Results
+    # Resultados
         result = ttk.Frame(frm)
         result.grid(row=3, column=0, columnspan=2, sticky='nsew', pady=(8, 0))
         frm.rowconfigure(3, weight=1)
         frm.columnconfigure(0, weight=1)
 
-        # Stats only (moves inline in trajectory)
+    # Estadísticas (los movimientos se muestran en la trayectoria)
         side = ttk.Frame(result)
         side.grid(row=0, column=0, sticky='ns')
 
@@ -113,7 +113,7 @@ class Puzzle8GUI:
         )
         self.stats_lbl.grid(row=0, column=0, sticky='w', pady=(0, 8))
 
-        # Path boards with scrollbar
+    # Trayectoria de tableros con barra de desplazamiento
         center = ttk.Frame(result)
         center.grid(row=0, column=1, sticky='nsew', padx=(16, 0))
         result.columnconfigure(1, weight=1)
@@ -185,9 +185,8 @@ class Puzzle8GUI:
             except Exception:
                 messagebox.showerror('Parámetro inválido', 'Límite de profundidad debe ser un entero ≥ 0.')
                 return
-        # No hay límite de nodos en la interfaz
 
-        # Run solver
+    # Ejecutar el algoritmo de resolución deseado
         try:
             if method.startswith('DFS'):
                 sol = dfs(self.start_state, self.goal_state, max_depth=max_depth, max_nodes=max_nodes)
@@ -229,7 +228,7 @@ class Puzzle8GUI:
             messagebox.showerror('Error en búsqueda', str(e))
             return
 
-        # Manhattan en stats: aplica para métodos heurísticos
+    # La distancia Manhattan en las estadísticas solo aplica para métodos heurísticos
         mdist_text = (
             'no aplica' if (method.startswith('DFS') or method.startswith('BPP')) else str(manhattan_distance(self.start_state, self.goal_state))
         )

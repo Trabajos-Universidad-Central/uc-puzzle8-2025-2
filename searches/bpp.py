@@ -3,6 +3,7 @@ from puzzle import State, Solution, neighbors
 
 
 def bpp(start: State, goal: State, nProf: int, max_nodes: Optional[int] = None) -> Optional[Solution]:
+    # Búsqueda en profundidad (BPP)
     if nProf < 0:
         return None
     if start == goal:
@@ -17,6 +18,7 @@ def bpp(start: State, goal: State, nProf: int, max_nodes: Optional[int] = None) 
     while abierto:
         current, parent_idx, move, depth = abierto.pop(0)
 
+        # Si el estado ya fue visitado con menor profundidad, lo omitimos
         if current in visited_depth and depth >= visited_depth[current]:
             continue
 
@@ -25,6 +27,7 @@ def bpp(start: State, goal: State, nProf: int, max_nodes: Optional[int] = None) 
         visited_depth[current] = depth
 
         if current == goal:
+            # Reconstruir la trayectoria y movimientos
             path_states: List[State] = []
             path_moves: List[str] = []
             i = idx_current
@@ -39,6 +42,7 @@ def bpp(start: State, goal: State, nProf: int, max_nodes: Optional[int] = None) 
             return Solution(path_states, path_moves, nodes_generated, nodes_expanded)
 
         if depth < nProf:
+            # Expandir sucesores si no se ha alcanzado la profundidad máxima
             nodes_expanded += 1
             succs = neighbors(current)
 
@@ -54,4 +58,3 @@ def bpp(start: State, goal: State, nProf: int, max_nodes: Optional[int] = None) 
                 abierto = nuevos + abierto
 
     return None
-

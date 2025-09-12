@@ -61,3 +61,30 @@ En la carpeta `estados_de_prueba` se incluyen dos archivos de ejemplo:
 Cada archivo representa el estado del puzzle como una matriz de 3x3, donde los números están separados por espacios y cada fila en una línea distinta. El número `0` representa el espacio vacío.
 
 Puedes utilizar estos archivos para cargar estados de prueba en el programa principal.
+
+## Ejecutable (Windows)
+
+- Archivo generado: `dist/Puzzle8.exe` (aplicación GUI, sin consola).
+
+### Construir el ejecutable
+
+Opciones (elige una):
+
+- CMD (.bat):
+  ```bat
+  build_exe.bat
+  ```
+
+- PowerShell (.ps1):
+  ```powershell
+  ./build_exe.ps1
+  # Limpieza opcional de artefactos previos
+  ./build_exe.ps1 -Clean
+  ```
+
+Requisitos: Python 3.8+ y conexión para instalar PyInstaller (la primera vez). Los artefactos intermedios se escriben en `build/` y `Puzzle8.spec`; el binario final queda en `dist/`.
+
+### Entrega
+
+- Entrega únicamente `dist/Puzzle8.exe` si solo necesitas el ejecutable.
+- Para probar: haz doble clic en `Puzzle8.exe` y utiliza los archivos ejemplo en `estados_de_prueba/` para cargar estado inicial y meta.

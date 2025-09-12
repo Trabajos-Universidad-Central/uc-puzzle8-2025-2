@@ -7,10 +7,12 @@ MOVES = ['Arriba', 'Abajo', 'Izquierda', 'Derecha']
 
 
 def _random_chromosome(length: int) -> List[str]:
+    # Genera un cromosoma aleatorio de movimientos
     return [random.choice(MOVES) for _ in range(length)]
 
 
 def _crossover(a: List[str], b: List[str]) -> Tuple[List[str], List[str]]:
+    # Realiza cruce de un punto entre dos cromosomas
     if len(a) != len(b) or len(a) == 0:
         return a[:], b[:]
     point = random.randint(1, len(a) - 1)
@@ -18,12 +20,14 @@ def _crossover(a: List[str], b: List[str]) -> Tuple[List[str], List[str]]:
 
 
 def _mutate(ch: List[str], rate: float) -> None:
+    # Aplica mutación aleatoria a un cromosoma
     for i in range(len(ch)):
         if random.random() < rate:
             ch[i] = random.choice(MOVES)
 
 
 def _tournament(pop: List[List[str]], fitness: List[int], k: int) -> List[str]:
+    # Selección por torneo: elige el mejor de k individuos aleatorios
     idxs = random.sample(range(len(pop)), k=min(k, len(pop)))
     best = min(idxs, key=lambda i: fitness[i])
     return pop[best][:]
@@ -41,18 +45,18 @@ def genetic_simple(
     elitism: int = 2,
 ) -> Optional[Solution]:
     """
-    Algoritmo genético simple para puzzle-8, cromosoma = secuencia de movimientos fija.
-    Fitness = distancia Manhattan del estado alcanzado tras aplicar la secuencia al estado inicial.
-    Éxito cuando fitness = 0 (se alcanza la meta).
-    Nodos generados = total de descendientes producidos.
-    Nodos expandidos = evaluaciones de fitness (individuos) realizadas.
+    Algoritmo genético simple para el puzzle-8, donde cada cromosoma es una secuencia fija de movimientos.
+    La aptitud (fitness) es la distancia Manhattan entre el estado alcanzado y el estado meta tras aplicar la secuencia.
+    El algoritmo tiene éxito cuando la aptitud es 0 (se alcanza la meta).
+    Nodos generados: total de descendientes producidos.
+    Nodos expandidos: total de evaluaciones de aptitud realizadas (individuos evaluados).
     """
-    # Población inicial
+    # Generar la población inicial de cromosomas aleatorios
     population: List[List[str]] = [_random_chromosome(chrom_len) for _ in range(pop_size)]
     nodes_generated = 0
     nodes_expanded = 0
 
-    # Evaluar población inicial
+    # Evaluar la aptitud de la población inicial
     fitness: List[int] = []
     for ch in population:
         end_state, _ = apply_moves(start, ch)
@@ -61,13 +65,13 @@ def genetic_simple(
         nodes_expanded += 1
 
     for gen in range(1, generations + 1):
-        # ¿Solución encontrada?
+    # ¿Se encontró una solución?
         best_idx = min(range(len(population)), key=lambda i: fitness[i])
         if fitness[best_idx] == 0:
-            # reconstruir trayectoria con el mejor
+            # Reconstruir la trayectoria con el mejor cromosoma
             _, path_states = apply_moves(start, population[best_idx])
-            # derivar lista de movimientos hasta llegar a meta (puede ser <= chrom_len si llega antes)
-            # recortar movimientos hasta el punto donde el estado sea la meta
+            # Derivar la lista de movimientos hasta llegar a la meta (puede ser menor o igual a chrom_len si llega antes)
+            # Recortar los movimientos hasta el punto donde se alcanza el estado meta
             moves: List[str] = []
             for i in range(1, len(path_states)):
                 moves.append(population[best_idx][i - 1])
@@ -76,11 +80,11 @@ def genetic_simple(
                     break
             return Solution(path_states, moves[: len(path_states) - 1], nodes_generated, nodes_expanded)
 
-        # Nueva generación con elitismo
+    # Crear nueva generación aplicando elitismo
         new_pop: List[List[str]] = []
         new_fit: List[int] = []
 
-        # Elitismo: copiar los mejores 'elitism' individuos
+    # Elitismo: copiar los mejores individuos según el parámetro 'elitism'
         if elitism > 0:
             order = sorted(range(len(population)), key=lambda i: fitness[i])
             for i in order[: min(elitism, pop_size)]:
@@ -88,19 +92,19 @@ def genetic_simple(
                 new_fit.append(fitness[i])
 
         while len(new_pop) < pop_size:
-            # Selección por torneo
+            # Selección por torneo para padres
             p1 = _tournament(population, fitness, tournament_k)
             p2 = _tournament(population, fitness, tournament_k)
 
-            # Cruce de un punto
+            # Cruce de un punto entre los padres
             c1, c2 = _crossover(p1, p2)
 
-            # Mutación cada m generaciones
+            # Aplicar mutación cada m generaciones
             if mutate_every > 0 and (gen % mutate_every == 0):
                 _mutate(c1, mutation_rate)
                 _mutate(c2, mutation_rate)
 
-            # Evaluar descendientes y añadir
+            # Evaluar los descendientes y agregarlos a la nueva población
             end1, _ = apply_moves(start, c1)
             f1 = manhattan_distance(end1, goal)
             nodes_generated += 1
@@ -116,9 +120,9 @@ def genetic_simple(
                 new_pop.append(c2)
                 new_fit.append(f2)
 
-        # Reemplazo generacional completo
-        population = new_pop
-        fitness = new_fit
+    # Reemplazo generacional completo: la nueva población sustituye a la anterior
+    population = new_pop
+    fitness = new_fit
 
-    # No convergió a solución
+    # Si no se encontró solución tras todas las generaciones, retorna None
     return None

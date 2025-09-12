@@ -4,17 +4,17 @@ from puzzle import State, Solution, neighbors, manhattan_distance
 
 def hill_climbing(start: State, goal: State, max_nodes: Optional[int] = None) -> Optional[Solution]:
     """
-    Ascenso de colina (Hill Climbing) según el pseudocódigo:
-    - ABIERTO y CERRADO
-    - Quitar primero de ABIERTO
-    - Si no en CERRADO: poner en CERRADO, expandir, calcular heurísticas, ordenar asc, mover sucesores al inicio
-    Nota: Usamos distancia de Manhattan como heurística.
+    Algoritmo de ascenso de colina para el puzzle-8 según el pseudocódigo visto en clase:
+    - Utiliza listas ABIERTO y CERRADO
+    - Quita el primer elemento de ABIERTO
+    - Si no está en CERRADO: lo agrega, expande, calcula heurísticas, ordena ascendente y mueve sucesores al inicio
+    Nota: Se utiliza la distancia de Manhattan como heurística.
     """
     if start == goal:
         return Solution([start], [], nodes_generated=0, nodes_expanded=0)
 
     abierto: List[Tuple[State, Optional[int], Optional[str], int]] = [(start, None, None, 0)]
-    cerrado: Dict[State, int] = {}  # guardamos la profundidad alcanzada solo como referencia
+    cerrado: Dict[State, int] = {}  # Guardamos la profundidad alcanzada solo como referencia
     explored: List[Tuple[State, Optional[int], Optional[str], int]] = []
     nodes_generated = 0
     nodes_expanded = 0
@@ -45,7 +45,7 @@ def hill_climbing(start: State, goal: State, max_nodes: Optional[int] = None) ->
 
         nodes_expanded += 1
         succs = neighbors(current)
-        # calcular heurística para cada sucesor
+    # Calcular la heurística para cada sucesor
         scored: List[Tuple[int, Tuple[str, State]]] = []
         for mv, st in succs:
             nodes_generated += 1
@@ -55,9 +55,9 @@ def hill_climbing(start: State, goal: State, max_nodes: Optional[int] = None) ->
             scored.append((h, (mv, st)))
 
         if scored:
-            # ordenar por heurística ascendente
+            # Ordenar por heurística ascendente
             scored.sort(key=lambda x: x[0])
-            # convertir a lista de entradas y poner al inicio de ABIERTO
+            # Convertir a lista de entradas y poner al inicio de ABIERTO
             nuevos: List[Tuple[State, Optional[int], Optional[str], int]] = []
             for _, (mv, st) in scored:
                 if st in cerrado:
@@ -66,4 +66,3 @@ def hill_climbing(start: State, goal: State, max_nodes: Optional[int] = None) ->
             abierto = nuevos + abierto
 
     return None
-

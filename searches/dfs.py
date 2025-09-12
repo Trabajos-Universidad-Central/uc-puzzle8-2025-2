@@ -3,6 +3,7 @@ from puzzle import State, Solution, neighbors
 
 
 def dfs(start: State, goal: State, max_depth: Optional[int] = None, max_nodes: Optional[int] = None) -> Optional[Solution]:
+    # Búsqueda en profundidad (DFS)
     if start == goal:
         return Solution([start], [], nodes_generated=0, nodes_expanded=0)
 
@@ -15,6 +16,7 @@ def dfs(start: State, goal: State, max_depth: Optional[int] = None, max_nodes: O
     while abierto:
         current, parent_idx, move, depth = abierto.pop()
 
+        # Si el estado ya fue visitado con menor profundidad, lo omitimos
         if current in visited_depth and depth >= visited_depth[current]:
             continue
 
@@ -23,6 +25,7 @@ def dfs(start: State, goal: State, max_depth: Optional[int] = None, max_nodes: O
         visited_depth[current] = depth
 
         if current == goal:
+            # Reconstruir la trayectoria y movimientos
             path_states: List[State] = []
             path_moves: List[str] = []
             i = idx_current
@@ -42,6 +45,7 @@ def dfs(start: State, goal: State, max_depth: Optional[int] = None, max_nodes: O
         nodes_expanded += 1
         succs = neighbors(current)
 
+        # Expandir sucesores
         for mv, st in succs:
             nodes_generated += 1
             if max_nodes is not None and nodes_generated > max_nodes:
@@ -50,5 +54,5 @@ def dfs(start: State, goal: State, max_depth: Optional[int] = None, max_nodes: O
             if (st not in visited_depth) or (new_depth < visited_depth[st]):
                 abierto.append((st, idx_current, mv, new_depth))
 
+    # Si no se encuentra solución, retorna None
     return None
-
