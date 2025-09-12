@@ -1,3 +1,6 @@
 __pycache__
 __init__.py
 /docs
+dist/
+build/
+*.spec
